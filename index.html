@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sokolponno.com - Premium Dry Fish & Everything Store</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind_Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff8f1',
+                            100: '#feecdc',
+                            500: '#f97316', // Vibrant Amber/Orange accent
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            earth: '#3f2e21', // Earthy dark brown
+                            leaf: '#16a34a'   // Fresh organic green
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Hind Siliguri', 'sans-serif'],
+                        bengali: ['Hind Siliguri', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for better visual quality */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div id="top-announcement" class="bg-brand-earth text-amber-200 text-xs py-1.5 px-4 text-center flex justify-between items-center px-6">
+        <div class="hidden sm:block">📍 Direct from Cox's Bazar & Coastal Fishermen | 100% Sun-Dried & Chemical Free</div>
+        <div class="mx-auto sm:mx-0 font-medium" id="announcement-text">🔥 Special Offer: Get FREE Delivery on orders over ৳1,500! Code: SOKOL100</div>
+        <div class="hidden md:flex items-center space-x-4">
+            <span class="cursor-pointer hover:underline"><i class="fas fa-headset mr-1"></i> Helpline: +880 1700-000000</span>
+            <span>|</span>
+            <select id="lang-selector" class="bg-transparent border-none text-amber-200 text-xs focus:ring-0 cursor-pointer">
+                <option value="bn" class="text-slate-800">বাংলা</option>
+                <option value="en" selected class="text-slate-800">English</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+            
+            <!-- LOGO -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="filterCategory('All')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-400 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    S
+                </div>
+                <div>
+                    <span class="text-2xl font-extrabold tracking-tight text-slate-900 flex items-center gap-1">
+                        sokolponno<span class="text-brand-600">.com</span>
+                    </span>
+                    <p class="text-[10px] text-slate-500 font-medium -mt-1 tracking-wide">EVERYTHING & PREMIUM DRY FISH STORE</p>
+                </div>
+            </div>
+
+            <!-- SEARCH BAR -->
+            <div class="flex-1 max-w-xl mx-4 hidden md:block">
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="Search dry fish (শুঁটকি), groceries, organic foods..." 
+                        class="w-full pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+                    <button onclick="handleSearch()" class="absolute right-1 top-1 bottom-1 px-4 bg-brand-500 hover:bg-brand-600 text-white rounded-full text-sm font-medium transition">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ACTION CONTROLS -->
+            <div class="flex items-center space-x-3 sm:space-x-5">
+                <!-- Admin Dashboard Toggle Button -->
+                <button onclick="toggleAdminPanel()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold shadow-sm transition">
+                    <i class="fas fa-sliders-h"></i>
+                    <span class="hidden sm:inline">Admin Studio</span>
+                </button>
+
+                <!-- Cart Button -->
+                <button onclick="toggleCartDrawer()" class="relative p-2 text-slate-700 hover:text-brand-600 transition">
+                    <i class="fas fa-shopping-bag text-xl"></i>
+                    <span id="cart-counter" class="absolute -top-1 -right-1 bg-brand-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
+                </button>
+
+                <!-- User Profile -->
+                <div class="relative group">
+                    <button class="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-100 text-slate-700 transition">
+                        <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold text-sm">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 py-2 hidden group-hover:block z-50 animate-fade-in">
+                        <div class="px-4 py-2 border-b border-slate-100">
+                            <p class="text-xs text-slate-400">Signed in as</p>
+                            <p class="text-sm font-semibold text-slate-800">Customer Demo</p>
+                        </div>
+                        <a href="#orders" onclick="showCustomerOrders()" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-50"><i class="fas fa-box mr-2"></i>My Orders</a>
+                        <a href="#wishlist" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-50"><i class="fas fa-heart mr-2"></i>Wishlist</a>
+                        <div class="border-t border-slate-100 my-1"></div>
+                        <a href="#" onclick="alert('Logged out demo session')" class="block px-4 py-2 text-xs text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY NAVIGATION BAR -->
+        <nav class="bg-slate-900 text-slate-200 text-sm overflow-x-auto">
+            <div class="max-w-7xl mx-auto px-4 flex space-x-1 whitespace-nowrap" id="category-nav-items">
+                <!-- Categories rendered dynamically via JS -->
+            </div>
+        </nav>
+    </header>
+
+    <!-- MOBILE SEARCH BAR -->
+    <div class="p-3 bg-white border-b md:hidden">
+        <div class="relative">
+            <input type="text" id="mobile-search-input" placeholder="Search dry fish (শুঁটকি)..." 
+                class="w-full pl-4 pr-10 py-2 bg-slate-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <button onclick="handleMobileSearch()" class="absolute right-2 top-2 text-slate-500">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- HERO BANNER -->
+        <section class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-brand-earth via-amber-950 to-slate-900 text-white mb-8 shadow-lg">
+            <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#f97316_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="relative z-10 px-6 py-10 sm:px-12 sm:py-16 max-w-2xl">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/20 text-amber-300 border border-brand-500/30 text-xs font-medium mb-4">
+                    <i class="fas fa-leaf text-brand-leaf"></i> 100% Organic & Naturally Sun-Dried
+                </span>
+                <h1 id="hero-title" class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-3 font-bengali">
+                    খাঁটি কেমিক্যালমুক্ত শুঁটকি <br/><span class="text-brand-500">Premium Dry Fish</span> Collection
+                </h1>
+                <p id="hero-subtitle" class="text-slate-300 text-sm sm:text-base mb-6 leading-relaxed">
+                    Sourced directly from organic coastal drying yards in Cox's Bazar and Sonadia. Hand-selected, zero harmful preservatives, and hygienically packed.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="filterCategory('Dry Fish (শুঁটকি)')" class="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-semibold text-sm shadow-md transition transform active:scale-95">
+                        Shop Dry Fish Now <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                    <button onclick="scrollToProducts()" class="px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium text-sm backdrop-blur-sm transition">
+                        Explore All Categories
+                    </button>
+                </div>
+            </div>
+            <!-- Decorative Badge -->
+            <div class="hidden lg:flex absolute right-12 bottom-8 top-8 w-80 items-center justify-center border-4 border-amber-500/20 rounded-2xl bg-white/5 backdrop-blur-md p-6 flex-col text-center">
+                <i class="fas fa-award text-5xl text-brand-500 mb-3"></i>
+                <h3 class="font-bold text-lg text-amber-100">Quality Guaranteed</h3>
+                <p class="text-xs text-slate-300 mt-1">Free returns if you are unsatisfied with scent or texture purity.</p>
+                <div class="mt-4 flex items-center gap-2 text-xs font-semibold text-amber-400 bg-black/40 px-3 py-1.5 rounded-full">
+                    <i class="fas fa-truck"></i> Fast Delivery Nationwide
+                </div>
+            </div>
+        </section>
+
+        <!-- STORE EXPANSION PREVIEW MODULES -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fas fa-th-large text-brand-500"></i> Store Categories
+                </h2>
+                <span class="text-xs text-slate-500">Expanding into Everything Store</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3" id="expansion-category-grid">
+                <!-- Dynamically Populated -->
+            </div>
+        </section>
+
+        <!-- PRODUCTS SECTION WITH FILTERS -->
+        <section id="products-section" class="scroll-mt-24">
+            <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-200 mb-6 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 font-bengali" id="current-category-title">Featured Dry Fish Products</h2>
+                    <p class="text-xs text-slate-500 mt-0.5" id="product-count-label">Showing all authentic items</p>
+                </div>
+
+                <!-- FILTER CONTROLS -->
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
+                    <!-- Processing Filter -->
+                    <select id="filter-type" onchange="applyFilters()" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-brand-500 outline-none">
+                        <option value="ALL">All Types / Processing</option>
+                        <option value="Sun-Dried">Sun-Dried (রৌদে শুকানো)</option>
+                        <option value="Salt-Free">Salt-Free (লবণ ছাড়া)</option>
+                        <option value="Smoked">Smoked (ধোঁয়াযুক্ত)</option>
+                    </select>
+
+                    <!-- Price Filter -->
+                    <select id="filter-price" onchange="applyFilters()" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-700 font-medium focus:ring-2 focus:ring-brand-500 outline-none">
+                        <option value="ALL">Sort By Price</option>
+                        <option value="LOW_HIGH">Price: Low to High</option>
+                        <option value="HIGH_LOW">Price: High to Low</option>
+                    </select>
+
+                    <button onclick="resetFilters()" class="p-2 text-slate-500 hover:text-brand-600 bg-white border border-slate-200 rounded-lg" title="Reset Filters">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PRODUCT GRID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="product-grid">
+                <!-- Dynamic Product Cards Will Be Injected Here -->
+            </div>
+        </section>
+
+        <!-- WHY CHOOSE SOKOLPONNO -->
+        <section class="mt-16 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-6 sm:p-10">
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <h3 class="text-2xl font-bold text-brand-earth font-bengali">কেন sokolponno.com থেকে শুঁটকি কিনবেন?</h3>
+                <p class="text-xs text-slate-600 mt-1">We maintain 100% natural processing protocols without DDT or chemical sprays.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-amber-100/50">
+                    <div class="w-12 h-12 bg-amber-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-800">100% Natural Drying</h4>
+                    <p class="text-xs text-slate-500 mt-1">Naturally sun-dried in clean coastal elevated racks.</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-amber-100/50">
+                    <div class="w-12 h-12 bg-green-100 text-brand-leaf rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                        <i class="fas fa-shield-virus"></i>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-800">No Harmful Insecticide</h4>
+                    <p class="text-xs text-slate-500 mt-1">Guaranteed free from DDT, insecticides, or toxic salts.</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-amber-100/50">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                        <i class="fas fa-box-tissue"></i>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-800">Odor-Lock Packaging</h4>
+                    <p class="text-xs text-slate-500 mt-1">Vacuum-sealed food-grade packs prevent smell leak in delivery.</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-amber-100/50">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-800">Cash on Delivery</h4>
+                    <p class="text-xs text-slate-500 mt-1">Check product quality upon arrival before paying.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center text-white font-bold text-sm">S</div>
+                    <span class="text-lg font-bold text-white tracking-wide">sokolponno<span class="text-brand-500">.com</span></span>
+                </div>
+                <p class="text-slate-400 mb-4 leading-relaxed">
+                    Your premier destination for authentic Cox's Bazar organic dry fish and expanding everyday essential marketplace.
+                </p>
+                <div class="flex space-x-3 text-base text-slate-300">
+                    <a href="#" class="hover:text-brand-500"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-brand-500"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-brand-500"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="hover:text-brand-500"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-semibold text-white mb-3 uppercase tracking-wider">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" onclick="filterCategory('Dry Fish (শুঁটকি)')" class="hover:text-white">Dry Fish Collection (শুঁটকি)</a></li>
+                    <li><a href="#" onclick="filterCategory('Organic Foods')" class="hover:text-white">Organic Oils & Spices</a></li>
+                    <li><a href="#" class="hover:text-white">Track Order</a></li>
+                    <li><a href="#" class="hover:text-white">Wholesale & Bulk Orders</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-semibold text-white mb-3 uppercase tracking-wider">Customer Care</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white">Return & Refund Policy</a></li>
+                    <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                    <li><a href="#" onclick="toggleAdminPanel()" class="text-brand-500 hover:underline">Admin Login / Panel</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-semibold text-white mb-3 uppercase tracking-wider">Contact Us</h4>
+                <p class="mb-1"><i class="fas fa-map-marker-alt text-brand-500 mr-2"></i> Plot 12, Fishery Ghat, Cox's Bazar, Bangladesh</p>
+                <p class="mb-1"><i class="fas fa-phone text-brand-500 mr-2"></i> +880 1700-000000</p>
+                <p class="mb-3"><i class="fas fa-envelope text-brand-500 mr-2"></i> support@sokolponno.com</p>
+                <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                    <span class="text-[11px] text-slate-300 font-semibold block mb-1">Accepted Payment Methods:</span>
+                    <div class="flex flex-wrap gap-2 text-xs font-bold text-slate-300">
+                        <span class="bg-pink-900/60 text-pink-300 px-2 py-0.5 rounded border border-pink-700">bKash</span>
+                        <span class="bg-orange-900/60 text-orange-300 px-2 py-0.5 rounded border border-orange-700">Nagad</span>
+                        <span class="bg-purple-900/60 text-purple-300 px-2 py-0.5 rounded border border-purple-700">Rocket</span>
+                        <span class="bg-slate-700 text-slate-200 px-2 py-0.5 rounded">COD</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-slate-950 py-4 border-t border-slate-800 text-center text-slate-500">
+            &copy; 2026 sokolponno.com. All rights reserved. Multi-vendor ready platform.
+        </div>
+    </footer>
+
+
+    <!-- ==================== MODALS & DRAWER ==================== -->
+
+    <!-- SHOPPING CART DRAWER -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="toggleCartDrawer()"></div>
+        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <div class="pointer-events-auto w-screen max-w-md bg-white shadow-2xl flex flex-col">
+                <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+                    <h2 class="text-base font-bold flex items-center gap-2">
+                        <i class="fas fa-shopping-bag text-brand-500"></i> Your Shopping Cart
+                    </h2>
+                    <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-white p-1">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-4 space-y-4" id="cart-items-container">
+                    <!-- Dynamic cart items rendered here -->
+                </div>
+
+                <div class="p-4 border-t border-slate-100 bg-slate-50 space-y-3">
+                    <!-- Coupon input -->
+                    <div class="flex gap-2">
+                        <input type="text" id="coupon-code" placeholder="Coupon Code (e.g. SOKOL100)" class="flex-1 px-3 py-1.5 border border-slate-300 rounded-lg text-xs uppercase">
+                        <button onclick="applyCoupon()" class="px-3 py-1.5 bg-slate-800 text-white text-xs font-semibold rounded-lg hover:bg-slate-700">Apply</button>
+                    </div>
+                    <div id="coupon-msg" class="text-[11px] font-medium hidden"></div>
+
+                    <!-- Pricing breakdown -->
+                    <div class="space-y-1.5 text-xs text-slate-600 border-t border-slate-200 pt-3">
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal" class="font-semibold text-slate-800">৳0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Discount</span>
+                            <span id="cart-discount" class="text-green-600 font-semibold">-৳0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Est. Shipping (Cox's Bazar/National)</span>
+                            <span id="cart-shipping" class="font-semibold text-slate-800">৳60</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-bold text-slate-900 pt-2 border-t border-slate-200">
+                            <span>Total Payable</span>
+                            <span id="cart-total" class="text-brand-600">৳0</span>
+                        </div>
+                    </div>
+
+                    <button onclick="openCheckoutModal()" id="btn-proceed-checkout" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold text-sm shadow-md transition text-center block">
+                        Proceed to Checkout <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- PRODUCT QUICK VIEW MODAL -->
+    <div id="quickview-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col md:flex-row animate-fade-in">
+            <button onclick="closeQuickView()" class="absolute top-3 right-3 z-10 w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="md:w-1/2 bg-slate-100 p-6 flex items-center justify-center">
+                <img id="qv-image" src="" alt="" class="max-h-64 object-contain rounded-xl shadow-inner">
+            </div>
+
+            <div class="md:w-1/2 p-6 flex flex-col justify-between overflow-y-auto">
+                <div>
+                    <span id="qv-category" class="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2 py-1 rounded"></span>
+                    <h3 id="qv-title" class="text-xl font-bold text-slate-900 mt-2 font-bengali"></h3>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span id="qv-price" class="text-2xl font-extrabold text-brand-600"></span>
+                        <span id="qv-old-price" class="text-xs text-slate-400 line-through"></span>
+                    </div>
+
+                    <p id="qv-description" class="text-xs text-slate-600 mt-3 leading-relaxed"></p>
+
+                    <!-- Weight Selector -->
+                    <div class="mt-4">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Select Weight Pack:</label>
+                        <div class="flex gap-2" id="qv-weight-options">
+                            <button onclick="selectWeight(250)" class="weight-btn px-3 py-1.5 border border-brand-500 bg-brand-50 text-brand-600 rounded-lg text-xs font-bold" data-weight="250">250 gm</button>
+                            <button onclick="selectWeight(500)" class="weight-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" data-weight="500">500 gm</button>
+                            <button onclick="selectWeight(1000)" class="weight-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" data-weight="1000">1 kg</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex items-center gap-3">
+                        <label class="text-xs font-semibold text-slate-700">Quantity:</label>
+                        <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden">
+                            <button onclick="adjustQvQty(-1)" class="px-3 py-1 bg-slate-100 text-slate-600 font-bold hover:bg-slate-200">-</button>
+                            <span id="qv-qty" class="px-4 text-xs font-bold">1</span>
+                            <button onclick="adjustQvQty(1)" class="px-3 py-1 bg-slate-100 text-slate-600 font-bold hover:bg-slate-200">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 flex gap-2">
+                    <button id="qv-add-btn" onclick="addQvToCart()" class="flex-1 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold text-xs transition shadow-md">
+                        <i class="fas fa-cart-plus mr-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-xl w-full my-8 p-6 shadow-2xl relative animate-fade-in max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <h3 class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+                <i class="fas fa-shield-alt text-brand-leaf"></i> Secure Checkout
+            </h3>
+            <p class="text-xs text-slate-500 mb-6">Complete your order details below for sokolponno.com</p>
+
+            <form id="checkout-form" onsubmit="handleOrderSubmission(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name *</label>
+                        <input type="text" required id="cust-name" placeholder="e.g., Rahim Uddin" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Phone Number (Required for COD) *</label>
+                        <input type="tel" required id="cust-phone" placeholder="017XXXXXXXX" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery Address *</label>
+                    <textarea required id="cust-address" rows="2" placeholder="House no, Street, Thana, District" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                </div>
+
+                <!-- Payment Methods -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Select Payment Method *</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <label class="border rounded-xl p-2.5 flex items-center gap-2 cursor-pointer hover:bg-slate-50 border-slate-200">
+                            <input type="radio" name="payment_method" value="bKash" checked class="text-brand-500">
+                            <span class="text-xs font-bold text-pink-600">bKash</span>
+                        </label>
+                        <label class="border rounded-xl p-2.5 flex items-center gap-2 cursor-pointer hover:bg-slate-50 border-slate-200">
+                            <input type="radio" name="payment_method" value="Nagad" class="text-brand-500">
+                            <span class="text-xs font-bold text-orange-600">Nagad</span>
+                        </label>
+                        <label class="border rounded-xl p-2.5 flex items-center gap-2 cursor-pointer hover:bg-slate-50 border-slate-200">
+                            <input type="radio" name="payment_method" value="Rocket" class="text-brand-500">
+                            <span class="text-xs font-bold text-purple-600">Rocket</span>
+                        </label>
+                        <label class="border rounded-xl p-2.5 flex items-center gap-2 cursor-pointer hover:bg-slate-50 border-slate-200">
+                            <input type="radio" name="payment_method" value="COD" class="text-brand-500">
+                            <span class="text-xs font-bold text-slate-800">Cash on Delivery</span>
+                        </label>
+                        <label class="border rounded-xl p-2.5 flex items-center gap-2 cursor-pointer hover:bg-slate-50 border-slate-200">
+                            <input type="radio" name="payment_method" value="Card" class="text-brand-500">
+                            <span class="text-xs font-bold text-blue-600">Credit/Debit Card</span>
+                        </label>
+                        <label class="border rounded-xl p-2.5 flex items-center gap-2 cursor-pointer hover:bg-slate-50 border-slate-200">
+                            <input type="radio" name="payment_method" value="Bank" class="text-brand-500">
+                            <span class="text-xs font-bold text-emerald-700">Bank Transfer</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 p-3 rounded-lg border border-amber-200 text-[11px] text-amber-800">
+                    <i class="fas fa-info-circle mr-1"></i> Mobile Banking instructions: Send total payment to <strong>+8801700000000 (Merchant)</strong> or choose COD for payment upon delivery.
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-500">Total Payable Amount:</span>
+                        <div id="checkout-total-amount" class="text-xl font-black text-brand-600">৳0</div>
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-brand-leaf hover:bg-green-700 text-white rounded-xl font-bold text-xs shadow-lg transition">
+                        Confirm & Place Order <i class="fas fa-check-circle ml-1"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ORDER CONFIRMATION RECEIPT MODAL -->
+    <div id="receipt-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative text-center animate-fade-in">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-900">Order Placed Successfully!</h3>
+            <p class="text-xs text-slate-500 mt-1">Thank you for purchasing from sokolponno.com</p>
+
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 my-4 text-left text-xs space-y-1.5">
+                <div class="flex justify-between"><span class="text-slate-500">Order ID:</span><span id="rec-id" class="font-bold text-slate-800"></span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Customer:</span><span id="rec-name" class="font-semibold text-slate-800"></span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Payment Method:</span><span id="rec-method" class="font-bold text-brand-600"></span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Transaction Ref:</span><span id="rec-txid" class="font-mono text-slate-700"></span></div>
+                <div class="border-t border-slate-200 my-2 pt-2 flex justify-between font-bold text-sm">
+                    <span>Paid Amount:</span><span id="rec-amount" class="text-brand-600"></span>
+                </div>
+            </div>
+
+            <p class="text-[11px] text-slate-400 mb-4">A copy of this receipt has been added to the Store Financial Ledger in Admin Studio.</p>
+
+            <button onclick="closeReceiptModal()" class="w-full py-2.5 bg-slate-900 text-white font-bold rounded-xl text-xs hover:bg-slate-800 transition">
+                Continue Shopping
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ==================== ADMIN DASHBOARD & MANAGEMENT STUDIO ==================== -->
+    <div id="admin-panel" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex flex-col animate-fade-in">
+        <!-- Admin Header -->
+        <div class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between text-white">
+            <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 bg-brand-500 text-slate-950 font-black rounded text-xs uppercase tracking-wider">Admin Studio</span>
+                <h2 class="text-lg font-bold">sokolponno.com Store Management Engine</h2>
+            </div>
+            <button onclick="toggleAdminPanel()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-semibold text-slate-300">
+                <i class="fas fa-times mr-1"></i> Exit Admin Mode
+            </button>
+        </div>
+
+        <!-- Admin Content Layout -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-slate-900 border-r border-slate-800 p-4 flex flex-col space-y-1">
+                <button onclick="switchAdminTab('products')" id="tab-btn-products" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold text-white bg-brand-600">
+                    <i class="fas fa-box w-5"></i> Product Inventory
+                </button>
+                <button onclick="switchAdminTab('financials')" id="tab-btn-financials" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i class="fas fa-file-invoice-dollar w-5"></i> Financial & Tx Ledger
+                </button>
+                <button onclick="switchAdminTab('modules')" id="tab-btn-modules" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i class="fas fa-cubes w-5"></i> Feature Modules (Multi-Vendor)
+                </button>
+                <button onclick="switchAdminTab('settings')" id="tab-btn-settings" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i class="fas fa-cog w-5"></i> Site & Currency Settings
+                </button>
+
+                <div class="mt-auto p-3 bg-slate-950 rounded-lg border border-slate-800 text-[11px] text-slate-400">
+                    <p class="font-bold text-amber-400 mb-1"><i class="fas fa-info-circle"></i> Future Expansion Ready</p>
+                    <p>All edits take instant effect on customer view in real-time.</p>
+                </div>
+            </aside>
+
+            <!-- Main Admin Workspace -->
+            <main class="flex-1 overflow-y-auto p-6 bg-slate-950 text-slate-200">
+                
+                <!-- TAB 1: PRODUCT MANAGEMENT -->
+                <div id="admin-tab-products" class="admin-tab-content space-y-6">
+                    <div class="flex justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
+                        <div>
+                            <h3 class="text-base font-bold text-white">Dynamic Product Catalog Editor</h3>
+                            <p class="text-xs text-slate-400">Add or edit dry fish varieties, prices, stocks, and category items.</p>
+                        </div>
+                        <button onclick="openAddProductModal()" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold transition">
+                            <i class="fas fa-plus mr-1"></i> Add New Product
+                        </button>
+                    </div>
+
+                    <!-- Products Table -->
+                    <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                        <table class="w-full text-left text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="p-3">Item</th>
+                                    <th class="p-3">Category</th>
+                                    <th class="p-3">Price / Kg</th>
+                                    <th class="p-3">Processing</th>
+                                    <th class="p-3">Stock Level</th>
+                                    <th class="p-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-product-table-body" class="divide-y divide-slate-800">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 2: FINANCIAL & TRANSACTION LEDGER -->
+                <div id="admin-tab-financials" class="admin-tab-content hidden space-y-6">
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400 font-medium">Total Lifetime Sales</span>
+                            <div class="text-2xl font-black text-emerald-400 mt-1" id="stat-total-revenue">৳0</div>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400 font-medium">Total Orders Processed</span>
+                            <div class="text-2xl font-black text-brand-500 mt-1" id="stat-total-orders">0</div>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400 font-medium">Avg Order Value</span>
+                            <div class="text-2xl font-black text-blue-400 mt-1" id="stat-avg-order">৳0</div>
+                        </div>
+                    </div>
+
+                    <!-- Add Manual Ledger Entry -->
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                        <h4 class="text-xs font-bold text-slate-300 mb-3 uppercase tracking-wider">Manual Transaction Entry Tool</h4>
+                        <form onsubmit="addManualTransaction(event)" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                            <input type="text" id="manual-tx-cust" placeholder="Customer Name" required class="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-xs text-white">
+                            <input type="number" id="manual-tx-amount" placeholder="Amount (৳)" required class="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-xs text-white">
+                            <select id="manual-tx-method" class="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-xs text-white">
+                                <option value="bKash">bKash</option>
+                                <option value="Nagad">Nagad</option>
+                                <option value="Rocket">Rocket</option>
+                                <option value="COD">Cash on Delivery</option>
+                                <option value="Bank">Bank Transfer</option>
+                            </select>
+                            <input type="text" id="manual-tx-ref" placeholder="TxID / Ref" class="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-xs text-white">
+                            <button type="submit" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold">Record Entry</button>
+                        </form>
+                    </div>
+
+                    <!-- Transaction Ledger Table -->
+                    <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                        <div class="p-3 bg-slate-950 border-b border-slate-800 font-bold text-xs text-slate-300 flex justify-between items-center">
+                            <span>Payment Gateway & Order Ledger</span>
+                            <button onclick="exportTransactionsCSV()" class="text-brand-500 hover:underline"><i class="fas fa-download mr-1"></i> Export Log</button>
+                        </div>
+                        <table class="w-full text-left text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="p-3">Tx ID</th>
+                                    <th class="p-3">Customer</th>
+                                    <th class="p-3">Method</th>
+                                    <th class="p-3">Amount</th>
+                                    <th class="p-3">Date</th>
+                                    <th class="p-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-tx-table-body" class="divide-y divide-slate-800">
+                                <!-- Dynamic Transaction Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 3: FEATURE MODULE TOGGLES -->
+                <div id="admin-tab-modules" class="admin-tab-content hidden space-y-4">
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 mb-4">
+                        <h3 class="text-base font-bold text-white">Platform Expansion Modules</h3>
+                        <p class="text-xs text-slate-400">Toggle system features as sokolponno.com grows into a full multi-vendor ecosystem.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Multi-Vendor Marketplace Mode</h4>
+                                <p class="text-xs text-slate-400">Allow local Cox's Bazar dried fish vendors to register and sell.</p>
+                            </div>
+                            <input type="checkbox" id="mod-multivendor" onchange="toggleModule('multivendor')" class="w-5 h-5 accent-brand-500 cursor-pointer">
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">International Express Shipping</h4>
+                                <p class="text-xs text-slate-400">Enable international diaspora orders (Middle East/UK/US).</p>
+                            </div>
+                            <input type="checkbox" id="mod-international" onchange="toggleModule('international')" class="w-5 h-5 accent-brand-500 cursor-pointer">
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Monthly Dry Fish Subscription Packs</h4>
+                                <p class="text-xs text-slate-400">Allow customers to subscribe for monthly automatic deliveries.</p>
+                            </div>
+                            <input type="checkbox" id="mod-subscription" onchange="toggleModule('subscription')" class="w-5 h-5 accent-brand-500 cursor-pointer">
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Loyalty & Reward Points System</h4>
+                                <p class="text-xs text-slate-400">Give customers points on every shutki purchase for discounts.</p>
+                            </div>
+                            <input type="checkbox" id="mod-loyalty" checked onchange="toggleModule('loyalty')" class="w-5 h-5 accent-brand-500 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: SITE SETTINGS MANAGER -->
+                <div id="admin-tab-settings" class="admin-tab-content hidden space-y-6">
+                    <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 max-w-xl">
+                        <h3 class="text-base font-bold text-white mb-4">Edit Global Site Settings</h3>
+                        <form onsubmit="saveSiteSettings(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Store Name</label>
+                                <input type="text" id="cfg-store-name" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Hero Banner Title (Bengali)</label>
+                                <input type="text" id="cfg-hero-title" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Top Announcement Bar Text</label>
+                                <input type="text" id="cfg-announcement" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Currency Symbol</label>
+                                <input type="text" id="cfg-currency" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-xs text-white">
+                            </div>
+                            <button type="submit" class="px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-lg text-xs">
+                                Save All Settings
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+
+    <!-- EDIT / ADD PRODUCT MODAL IN ADMIN -->
+    <div id="admin-product-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
+        <div class="bg-slate-900 border border-slate-800 text-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeAdminProductModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 id="admin-prod-modal-title" class="text-lg font-bold mb-4">Add New Product</h3>
+
+            <form onsubmit="saveProduct(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="prod-form-id">
+                <div>
+                    <label class="block text-slate-400 mb-1">Product Title</label>
+                    <input type="text" id="prod-form-title" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-white">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Category</label>
+                    <select id="prod-form-category" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-white">
+                        <option value="Dry Fish (শুঁটকি)">Dry Fish (শুঁটকি)</option>
+                        <option value="Grocery">Grocery</option>
+                        <option value="Organic Foods">Organic Foods</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Handicrafts">Handicrafts</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Base Price (৳)</label>
+                        <input type="number" id="prod-form-price" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Original Price (৳)</label>
+                        <input type="number" id="prod-form-oldprice" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Processing Type</label>
+                    <select id="prod-form-type" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-white">
+                        <option value="Sun-Dried">Sun-Dried</option>
+                        <option value="Salt-Free">Salt-Free</option>
+                        <option value="Smoked">Smoked</option>
+                        <option value="Fresh/Standard">Fresh/Standard</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Image URL</label>
+                    <input type="url" id="prod-form-image" required placeholder="https://..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-white">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Description</label>
+                    <textarea id="prod-form-desc" rows="2" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-white"></textarea>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeAdminProductModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded font-bold">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-500 text-white rounded font-bold hover:bg-brand-600">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT STATE MANAGEMENT ==================== -->
+    <script>
+        // --- DATA STATE ---
+        let categories = [
+            { name: "All", icon: "fa-th" },
+            { name: "Dry Fish (শুঁটকি)", icon: "fa-fish" },
+            { name: "Organic Foods", icon: "fa-seedling" },
+            { name: "Grocery", icon: "fa-shopping-basket" },
+            { name: "Electronics", icon: "fa-tv" },
+            { name: "Handicrafts", icon: "fa-palette" },
+            { name: "Fashion", icon: "fa-tshirt" }
+        ];
+
+        let products = [
+            {
+                id: 101,
+                title: "Premium Loitta Shutki (লইট্টা শুঁটকি)",
+                category: "Dry Fish (শুঁটকি)",
+                price: 850,
+                oldPrice: 950,
+                processing: "Sun-Dried",
+                badge: "100% Organic",
+                rating: 4.9,
+                reviewsCount: 128,
+                image: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=600&q=80",
+                description: "Authentic Cox's Bazar naturally sun-dried Ribbon/Loitta fish. Completely chemical & insect-spray free.",
+                stock: 45
+            },
+            {
+                id: 102,
+                title: "Traditional Chepa Shutki (চেপা শুঁটকি)",
+                category: "Dry Fish (শুঁটকি)",
+                price: 1100,
+                oldPrice: 1250,
+                processing: "Salt-Free",
+                badge: "Chemical-Free",
+                rating: 4.8,
+                reviewsCount: 94,
+                image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+                description: "Fermented naturally in earthen pots. Rich flavor and perfect for traditional bhorta recipes.",
+                stock: 30
+            },
+            {
+                id: 103,
+                title: "Chhuri Shutki - Ribbon Fish ( ছুরি শুঁটকি )",
+                category: "Dry Fish (শুঁটকি)",
+                price: 1400,
+                oldPrice: 1550,
+                processing: "Sun-Dried",
+                badge: "Salt-Free",
+                rating: 5.0,
+                reviewsCount: 67,
+                image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
+                description: "Large size premium Chhuri dry fish. Sun-dried on bamboo frames in coastal Sonadia island.",
+                stock: 20
+            },
+            {
+                id: 104,
+                title: "Chingri Shutki - Small Shrimp (চিংড়ি শুঁটকি)",
+                category: "Dry Fish (শুঁটকি)",
+                price: 950,
+                oldPrice: 1050,
+                processing: "Sun-Dried",
+                badge: "100% Organic",
+                rating: 4.7,
+                reviewsCount: 88,
+                image: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=600&q=80",
+                description: "Cleaned and sun-dried small sea prawns. Excellent crunchy texture and rich protein content.",
+                stock: 60
+            },
+            {
+                id: 105,
+                title: "Kaski Fish Shutki (কাচকি শুঁটকি)",
+                category: "Dry Fish (শুঁটকি)",
+                price: 1200,
+                oldPrice: 1300,
+                processing: "Salt-Free",
+                badge: "Sun-dried",
+                rating: 4.9,
+                reviewsCount: 42,
+                image: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=600&q=80",
+                description: "Tiny silver kaski dry fish. Sand-free and washed with clean sea water before drying.",
+                stock: 25
+            },
+            {
+                id: 106,
+                title: "Cold Pressed Mustard Oil (খাঁটি সরিষার তেল)",
+                category: "Organic Foods",
+                price: 360,
+                oldPrice: 400,
+                processing: "Fresh/Standard",
+                badge: "Wood-Pressed",
+                rating: 4.9,
+                reviewsCount: 150,
+                image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80",
+                description: "Pure ghani-crushed mustard oil. Essential pairing for shutki bhorta.",
+                stock: 100
+            }
+        ];
+
+        let cart = [];
+        let appliedCoupon = null;
+        let selectedCategory = "All";
+        let activeQuickViewId = null;
+        let selectedWeightGrams = 250;
+        let qvQty = 1;
+
+        // Transaction Ledger State
+        let transactions = [
+            {
+                id: "TX-90812",
+                customer: "Kamal Hossain",
+                amount: 1760,
+                method: "bKash",
+                ref: "9A8B7C6D",
+                date: "2026-03-28",
+                status: "Completed"
+            },
+            {
+                id: "TX-90813",
+                customer: "Sultana Razia",
+                amount: 950,
+                method: "COD",
+                ref: "COD-DHAKA",
+                date: "2026-03-29",
+                status: "Pending"
+            }
+        ];
+
+        let siteSettings = {
+            storeName: "sokolponno.com",
+            heroTitle: "খাঁটি কেমিক্যালমুক্ত শুঁটকি Premium Dry Fish Collection",
+            announcement: "🔥 Special Offer: Get FREE Delivery on orders over ৳1,500! Code: SOKOL100",
+            currency: "৳"
+        };
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            renderCategoryNav();
+            renderExpansionCategories();
+            renderProducts();
+            updateCartUI();
+            renderAdminProductTable();
+            renderAdminTransactions();
+        };
+
+        // --- RENDER FUNCTIONS ---
+        function renderCategoryNav() {
+            const nav = document.getElementById('category-nav-items');
+            nav.innerHTML = categories.map(cat => `
+                <button onclick="filterCategory('${cat.name}')" class="px-4 py-2.5 flex items-center gap-2 hover:bg-slate-800 rounded-t-lg transition text-xs font-semibold ${selectedCategory === cat.name ? 'text-brand-500 border-b-2 border-brand-500 bg-slate-800' : 'text-slate-300'}">
+                    <i class="fas ${cat.icon}"></i> ${cat.name}
+                </button>
+            `).join('');
+        }
+
+        function renderExpansionCategories() {
+            const grid = document.getElementById('expansion-category-grid');
+            grid.innerHTML = categories.filter(c => c.name !== 'All').map(cat => `
+                <div onclick="filterCategory('${cat.name}')" class="bg-white hover:bg-brand-50 border border-slate-200 hover:border-brand-500 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer transition text-center shadow-sm group">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-brand-500 group-hover:text-white text-brand-600 flex items-center justify-center mb-2 text-lg transition">
+                        <i class="fas ${cat.icon}"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 font-bengali">${cat.name}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderProducts(filteredList = null) {
+            const grid = document.getElementById('product-grid');
+            let list = filteredList || products;
+
+            if (selectedCategory !== 'All') {
+                list = list.filter(p => p.category === selectedCategory);
+            }
+
+            document.getElementById('product-count-label').innerText = `Showing ${list.length} available items`;
+
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-400">
+                        <i class="fas fa-box-open text-4xl mb-2"></i>
+                        <p class="text-sm font-semibold">No products found matching your search/filters.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = list.map(product => `
+                <div class="bg-white border border-slate-200 hover:border-brand-500 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+                    <div class="relative bg-slate-100 p-4 overflow-hidden flex items-center justify-center h-48">
+                        <span class="absolute top-2 left-2 z-10 bg-brand-leaf text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
+                            ${product.badge}
+                        </span>
+                        <img src="${product.image}" alt="${product.title}" class="max-h-full object-contain group-hover:scale-105 transition duration-300">
+                        <button onclick="openQuickView(${product.id})" class="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm text-slate-800 text-xs px-3 py-1.5 rounded-lg font-semibold shadow hover:bg-brand-500 hover:text-white transition">
+                            <i class="fas fa-eye mr-1"></i> Quick View
+                        </button>
+                    </div>
+
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wider">${product.category}</span>
+                            <h3 class="font-bold text-sm text-slate-900 mt-1 line-clamp-2 font-bengali">${product.title}</h3>
+                            <div class="flex items-center gap-1 text-amber-400 text-xs mt-1.5">
+                                <i class="fas fa-star"></i>
+                                <span class="font-bold text-slate-700">${product.rating}</span>
+                                <span class="text-slate-400 text-[10px]">(${product.reviewsCount})</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-lg font-extrabold text-slate-900">৳${product.price}</span>
+                                ${product.oldPrice ? `<span class="text-xs text-slate-400 line-through ml-1">৳${product.oldPrice}</span>` : ''}
+                                <span class="block text-[10px] text-slate-400">per 1kg standard</span>
+                            </div>
+                            <button onclick="quickAddToCart(${product.id})" class="p-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl shadow-sm transition">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- FILTERING & SEARCH ---
+        function filterCategory(catName) {
+            selectedCategory = catName;
+            document.getElementById('current-category-title').innerText = catName === 'All' ? 'All Products & Dry Fish' : catName;
+            renderCategoryNav();
+            renderProducts();
+            scrollToProducts();
+        }
+
+        function applyFilters() {
+            const typeFilter = document.getElementById('filter-type').value;
+            const priceSort = document.getElementById('filter-price').value;
+
+            let result = [...products];
+
+            if (selectedCategory !== 'All') {
+                result = result.filter(p => p.category === selectedCategory);
+            }
+
+            if (typeFilter !== 'ALL') {
+                result = result.filter(p => p.processing === typeFilter);
+            }
+
+            if (priceSort === 'LOW_HIGH') {
+                result.sort((a, b) => a.price - b.price);
+            } else if (priceSort === 'HIGH_LOW') {
+                result.sort((a, b) => b.price - a.price);
+            }
+
+            renderProducts(result);
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-type').value = 'ALL';
+            document.getElementById('filter-price').value = 'ALL';
+            document.getElementById('search-input').value = '';
+            selectedCategory = 'All';
+            renderCategoryNav();
+            renderProducts();
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const matched = products.filter(p => p.title.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            renderProducts(matched);
+            scrollToProducts();
+        }
+
+        function handleMobileSearch() {
+            const query = document.getElementById('mobile-search-input').value.toLowerCase();
+            const matched = products.filter(p => p.title.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            renderProducts(matched);
+            scrollToProducts();
+        }
+
+        function scrollToProducts() {
+            document.getElementById('products-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- QUICK VIEW MODAL LOGIC ---
+        function openQuickView(id) {
+            activeQuickViewId = id;
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            document.getElementById('qv-image').src = p.image;
+            document.getElementById('qv-category').innerText = p.category;
+            document.getElementById('qv-title').innerText = p.title;
+            document.getElementById('qv-price').innerText = `৳${p.price}`;
+            document.getElementById('qv-old-price').innerText = p.oldPrice ? `৳${p.oldPrice}` : '';
+            document.getElementById('qv-description').innerText = p.description;
+
+            selectedWeightGrams = 250;
+            qvQty = 1;
+            document.getElementById('qv-qty').innerText = qvQty;
+            updateWeightButtons();
+
+            document.getElementById('quickview-modal').classList.remove('hidden');
+        }
+
+        function closeQuickView() {
+            document.getElementById('quickview-modal').classList.add('hidden');
+        }
+
+        function selectWeight(grams) {
+            selectedWeightGrams = grams;
+            updateWeightButtons();
+        }
+
+        function updateWeightButtons() {
+            document.querySelectorAll('.weight-btn').forEach(btn => {
+                const w = parseInt(btn.getAttribute('data-weight'));
+                if (w === selectedWeightGrams) {
+                    btn.className = 'weight-btn px-3 py-1.5 border border-brand-500 bg-brand-50 text-brand-600 rounded-lg text-xs font-bold';
+                } else {
+                    btn.className = 'weight-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium';
+                }
+            });
+        }
+
+        function adjustQvQty(delta) {
+            qvQty = Math.max(1, qvQty + delta);
+            document.getElementById('qv-qty').innerText = qvQty;
+        }
+
+        function addQvToCart() {
+            if (!activeQuickViewId) return;
+            const p = products.find(item => item.id === activeQuickViewId);
+            if (p) {
+                // Calculate weight multiplier relative to 1kg base price
+                const weightMultiplier = selectedWeightGrams / 1000;
+                const unitPrice = Math.round(p.price * weightMultiplier);
+
+                addToCartInternal(p.id, p.title, unitPrice, selectedWeightGrams, qvQty, p.image);
+                closeQuickView();
+                toggleCartDrawer(true);
+            }
+        }
+
+        // --- CART SYSTEM ---
+        function quickAddToCart(productId) {
+            const p = products.find(item => item.id === productId);
+            if (p) {
+                // Default to 250g pack
+                const unitPrice = Math.round(p.price * 0.25);
+                addToCartInternal(p.id, p.title, unitPrice, 250, 1, p.image);
+                toggleCartDrawer(true);
+            }
+        }
+
+        function addToCartInternal(id, title, price, weightGrams, qty, image) {
+            const cartItemId = `${id}-${weightGrams}`;
+            const existing = cart.find(item => item.cartItemId === cartItemId);
+
+            if (existing) {
+                existing.qty += qty;
+            } else {
+                cart.push({
+                    cartItemId,
+                    id,
+                    title,
+                    price,
+                    weightGrams,
+                    qty,
+                    image
+                });
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const counter = document.getElementById('cart-counter');
+
+            const totalCount = cart.reduce((sum, i) => sum + i.qty, 0);
+            counter.innerText = totalCount;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="py-12 text-center text-slate-400">
+                        <i class="fas fa-shopping-basket text-4xl mb-2"></i>
+                        <p class="text-xs font-medium">Your cart is currently empty.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = cart.map(item => `
+                    <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <img src="${item.image}" class="w-14 h-14 object-contain bg-white rounded-lg p-1 border">
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold text-slate-800 line-clamp-1 font-bengali">${item.title}</h4>
+                            <span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-semibold">${item.weightGrams}g pack</span>
+                            <div class="text-xs font-extrabold text-brand-600 mt-1">৳${item.price * item.qty}</div>
+                        </div>
+                        <div class="flex items-center border border-slate-300 rounded bg-white text-xs">
+                            <button onclick="changeCartQty('${item.cartItemId}', -1)" class="px-2 py-0.5 font-bold">-</button>
+                            <span class="px-2 font-bold">${item.qty}</span>
+                            <button onclick="changeCartQty('${item.cartItemId}', 1)" class="px-2 py-0.5 font-bold">+</button>
+                        </div>
+                        <button onclick="removeFromCart('${item.cartItemId}')" class="text-slate-400 hover:text-red-500 p-1">
+                            <i class="fas fa-trash-alt text-xs"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            // Subtotals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let discount = 0;
+            if (appliedCoupon === 'SOKOL100') {
+                discount = 100;
+            }
+
+            const shipping = subtotal > 1500 || subtotal === 0 ? 0 : 60;
+            const total = Math.max(0, subtotal - discount + shipping);
+
+            document.getElementById('cart-subtotal').innerText = `৳${subtotal}`;
+            document.getElementById('cart-discount').innerText = `-৳${discount}`;
+            document.getElementById('cart-shipping').innerText = shipping === 0 ? 'FREE' : `৳${shipping}`;
+            document.getElementById('cart-total').innerText = `৳${total}`;
+            document.getElementById('checkout-total-amount').innerText = `৳${total}`;
+        }
+
+        function changeCartQty(cartItemId, delta) {
+            const item = cart.find(i => i.cartItemId === cartItemId);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.cartItemId !== cartItemId);
+                }
+                updateCartUI();
+            }
+        }
+
+        function removeFromCart(cartItemId) {
+            cart = cart.filter(i => i.cartItemId !== cartItemId);
+            updateCartUI();
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('coupon-code').value.trim().toUpperCase();
+            const msg = document.getElementById('coupon-msg');
+            msg.classList.remove('hidden');
+
+            if (code === 'SOKOL100') {
+                appliedCoupon = 'SOKOL100';
+                msg.className = "text-[11px] font-medium text-green-600";
+                msg.innerText = "Coupon 'SOKOL100' applied (-৳100)!";
+            } else {
+                appliedCoupon = null;
+                msg.className = "text-[11px] font-medium text-red-500";
+                msg.innerText = "Invalid coupon code. Try SOKOL100";
+            }
+            updateCartUI();
+        }
+
+        function toggleCartDrawer(openForce = false) {
+            const drawer = document.getElementById('cart-drawer');
+            if (openForce) {
+                drawer.classList.remove('hidden');
+            } else {
+                drawer.classList.toggle('hidden');
+            }
+        }
+
+        // --- CHECKOUT & ORDER HANDLING ---
+        function openCheckoutModal() {
+            if (cart.length === 0) {
+                alert('Your cart is empty. Add products before checkout.');
+                return;
+            }
+            toggleCartDrawer();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function handleOrderSubmission(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const address = document.getElementById('cust-address').value;
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const discount = appliedCoupon === 'SOKOL100' ? 100 : 0;
+            const shipping = subtotal > 1500 ? 0 : 60;
+            const totalAmount = Math.max(0, subtotal - discount + shipping);
+
+            const txId = "TX-" + Math.floor(100000 + Math.random() * 900000);
+            const ref = paymentMethod === "COD" ? "COD-VERIFIED" : "MFS-" + Math.floor(1000 + Math.random() * 9000);
+
+            // Record into Admin Ledger
+            const newTx = {
+                id: txId,
+                customer: name,
+                amount: totalAmount,
+                method: paymentMethod,
+                ref: ref,
+                date: new Date().toISOString().split('T')[0],
+                status: paymentMethod === 'COD' ? 'Pending' : 'Completed'
+            };
+
+            transactions.unshift(newTx);
+            renderAdminTransactions();
+
+            // Populate Receipt
+            document.getElementById('rec-id').innerText = txId;
+            document.getElementById('rec-name').innerText = name;
+            document.getElementById('rec-method').innerText = paymentMethod;
+            document.getElementById('rec-txid').innerText = ref;
+            document.getElementById('rec-amount').innerText = `৳${totalAmount}`;
+
+            closeCheckoutModal();
+            cart = [];
+            appliedCoupon = null;
+            updateCartUI();
+
+            document.getElementById('receipt-modal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+
+
+        // ==================== ADMIN DASHBOARD LOGIC ====================
+        function toggleAdminPanel() {
+            document.getElementById('admin-panel').classList.toggle('hidden');
+        }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.admin-tab-btn').forEach(b => {
+                b.classList.remove('bg-brand-600', 'text-white');
+                b.classList.add('text-slate-400');
+            });
+
+            document.getElementById(`admin-tab-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            activeBtn.classList.add('bg-brand-600', 'text-white');
+            activeBtn.classList.remove('text-slate-400');
+        }
+
+        function renderAdminProductTable() {
+            const tbody = document.getElementById('admin-product-table-body');
+            tbody.innerHTML = products.map(p => `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="p-3 font-semibold text-white flex items-center gap-2">
+                        <img src="${p.image}" class="w-8 h-8 rounded bg-white object-contain p-0.5">
+                        ${p.title}
+                    </td>
+                    <td class="p-3 text-slate-400">${p.category}</td>
+                    <td class="p-3 font-bold text-amber-400">৳${p.price}</td>
+                    <td class="p-3"><span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px]">${p.processing}</span></td>
+                    <td class="p-3">${p.stock} units</td>
+                    <td class="p-3 text-right">
+                        <button onclick="editProduct(${p.id})" class="text-blue-400 hover:text-blue-300 mr-2"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteProduct(${p.id})" class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openAddProductModal() {
+            document.getElementById('admin-prod-modal-title').innerText = "Add New Product";
+            document.getElementById('prod-form-id').value = "";
+            document.getElementById('prod-form-title').value = "";
+            document.getElementById('prod-form-category').value = "Dry Fish (শুঁটকি)";
+            document.getElementById('prod-form-price').value = "";
+            document.getElementById('prod-form-oldprice').value = "";
+            document.getElementById('prod-form-type').value = "Sun-Dried";
+            document.getElementById('prod-form-image').value = "";
+            document.getElementById('prod-form-desc').value = "";
+            document.getElementById('admin-product-modal').classList.remove('hidden');
+        }
+
+        function editProduct(id) {
+            const p = products.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('admin-prod-modal-title').innerText = "Edit Product";
+            document.getElementById('prod-form-id').value = p.id;
+            document.getElementById('prod-form-title').value = p.title;
+            document.getElementById('prod-form-category').value = p.category;
+            document.getElementById('prod-form-price').value = p.price;
+            document.getElementById('prod-form-oldprice').value = p.oldPrice || '';
+            document.getElementById('prod-form-type').value = p.processing;
+            document.getElementById('prod-form-image').value = p.image;
+            document.getElementById('prod-form-desc').value = p.description;
+
+            document.getElementById('admin-product-modal').classList.remove('hidden');
+        }
+
+        function closeAdminProductModal() {
+            document.getElementById('admin-product-modal').classList.add('hidden');
+        }
+
+        function saveProduct(event) {
+            event.preventDefault();
+            const idVal = document.getElementById('prod-form-id').value;
+
+            const productData = {
+                title: document.getElementById('prod-form-title').value,
+                category: document.getElementById('prod-form-category').value,
+                price: parseFloat(document.getElementById('prod-form-price').value),
+                oldPrice: parseFloat(document.getElementById('prod-form-oldprice').value) || null,
+                processing: document.getElementById('prod-form-type').value,
+                badge: "Organic",
+                rating: 5.0,
+                reviewsCount: 1,
+                image: document.getElementById('prod-form-image').value,
+                description: document.getElementById('prod-form-desc').value,
+                stock: 50
+            };
+
+            if (idVal) {
+                // Edit existing
+                const idx = products.findIndex(p => p.id == idVal);
+                if (idx !== -1) {
+                    products[idx] = { ...products[idx], ...productData };
+                }
+            } else {
+                // Add new
+                productData.id = Date.now();
+                products.unshift(productData);
+            }
+
+            renderAdminProductTable();
+            renderProducts();
+            closeAdminProductModal();
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to remove this product from sokolponno.com?')) {
+                products = products.filter(p => p.id !== id);
+                renderAdminProductTable();
+                renderProducts();
+            }
+        }
+
+        // --- FINANCIAL LEDGER & TRANSACTIONS ---
+        function renderAdminTransactions() {
+            const tbody = document.getElementById('admin-tx-table-body');
+            tbody.innerHTML = transactions.map(tx => `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="p-3 font-mono font-bold text-brand-500">${tx.id}</td>
+                    <td class="p-3 font-semibold text-white">${tx.customer}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-amber-300 font-bold">${tx.method}</span></td>
+                    <td class="p-3 font-bold text-emerald-400">৳${tx.amount}</td>
+                    <td class="p-3 text-slate-400">${tx.date}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] ${tx.status === 'Completed' ? 'bg-green-900/50 text-green-300' : 'bg-yellow-900/50 text-yellow-300'}">${tx.status}</span></td>
+                </tr>
+            `).join('');
+
+            // Calculate Ledger Statistics
+            const totalRevenue = transactions.reduce((sum, t) => sum + t.amount, 0);
+            const totalOrders = transactions.length;
+            const avgOrder = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
+
+            document.getElementById('stat-total-revenue').innerText = `৳${totalRevenue}`;
+            document.getElementById('stat-total-orders').innerText = totalOrders;
+            document.getElementById('stat-avg-order').innerText = `৳${avgOrder}`;
+        }
+
+        function addManualTransaction(event) {
+            event.preventDefault();
+            const newTx = {
+                id: "MAN-" + Math.floor(10000 + Math.random() * 90000),
+                customer: document.getElementById('manual-tx-cust').value,
+                amount: parseFloat(document.getElementById('manual-tx-amount').value),
+                method: document.getElementById('manual-tx-method').value,
+                ref: document.getElementById('manual-tx-ref').value || 'OFFLINE-ENTRY',
+                date: new Date().toISOString().split('T')[0],
+                status: 'Completed'
+            };
+
+            transactions.unshift(newTx);
+            renderAdminTransactions();
+            event.target.reset();
+        }
+
+        function exportTransactionsCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,TxID,Customer,Amount,Method,Ref,Date,Status\n";
+            transactions.forEach(t => {
+                csvContent += `${t.id},${t.customer},${t.amount},${t.method},${t.ref},${t.date},${t.status}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "sokolponno_financial_ledger.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- MODULE & SITE SETTINGS LOGIC ---
+        function toggleModule(modName) {
+            const isChecked = document.getElementById(`mod-${modName}`).checked;
+            alert(`Module '${modName}' updated to: ${isChecked ? 'ENABLED' : 'DISABLED'}`);
+        }
+
+        function saveSiteSettings(event) {
+            event.preventDefault();
+            siteSettings.storeName = document.getElementById('cfg-store-name').value || siteSettings.storeName;
+            siteSettings.heroTitle = document.getElementById('cfg-hero-title').value || siteSettings.heroTitle;
+            siteSettings.announcement = document.getElementById('cfg-announcement').value || siteSettings.announcement;
+
+            document.getElementById('hero-title').innerHTML = siteSettings.heroTitle;
+            document.getElementById('announcement-text').innerText = siteSettings.announcement;
+
+            alert('Global site settings updated successfully!');
+        }
+
+        function showCustomerOrders() {
+            alert('Demo account: You have 1 active dry fish shipment in transit from Cox\'s Bazar Ghat.');
+        }
+    </script>
+</body>
+</html>
